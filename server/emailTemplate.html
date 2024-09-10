@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Bill</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f3f4f6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .email-container {
+            background-color: #ffffff;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            font-size: 16px;
+        }
+        .email-header {
+            background: linear-gradient(45deg, #2eb82e, #2575fc);
+            padding: 30px;
+            text-align: center;
+            color: #ffffff;
+        }
+        .email-header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .email-body {
+            padding: 25px;
+            line-height: 1.8;
+            color: #4b5563;
+        }
+        .email-body p {
+            margin: 0 0 16px;
+        }
+        .email-body .highlight {
+            color: #6a11cb;
+            font-weight: bold;
+        }
+        .email-body a {
+            display: inline-block;
+            padding: 15px 25px;
+            background-color: #2575fc;
+            color: #ffffff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+        .email-body a:hover {
+            background-color: #00cc00;
+        }
+        .email-footer {
+            background-color: #f9fafb;
+            text-align: center;
+            padding: 15px;
+            font-size: 14px;
+            color: #9ca3af;
+            border-top: 1px solid #e5e7eb;
+        }
+        .email-footer p {
+            margin: 5px 0;
+        }
+       
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            <h1>xყȥ ƈσɱραɳყ</h1>
+        </div>
+        <div class="email-body">
+            <p class="highlight">Dear {{recipientName}},</p>
+            <p>Thank you for using our service! We're pleased to inform you that your bill has been generated and is attached to this email.</p>
+            <p>If you have any questions or need assistance, feel free to contact us at any time. We appreciate your trust in us and look forward to continuing to serve you.</p>
+            <p>To view more details about me, click the button below:</p>
+            <a href="">View</a>
+        </div>
+        <div class="email-footer">
+            <p><strong>Best regards</p>
+            <p>Parbhansh Sharma</p>
+        </div>
+    </div>
+</body>
+</html>

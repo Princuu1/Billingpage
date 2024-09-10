@@ -1,0 +1,280 @@
+/* General styles for the page */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #ff7f50, #6a5acd); /* Orange to Blue gradient */
+}
+
+/* Container for the form */
+.container {
+    width: 100%;
+    max-width: 800px; /* Maximum width for larger screens */
+    margin: 20px auto;
+    background-color: #fde2e4; /* Light pink */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Heading */
+h1 {
+    text-align: center;
+    color: #00008b; /* Dark blue */
+    margin-bottom: 20px;
+}
+
+/* Footer text */
+.made-by {
+    text-align: center;
+    margin-top: 20px;
+    color: #4169e1; /* Royal blue */
+    font-size: 16px;
+}
+
+/* Form elements styling */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-top: 10px;
+    color: #555;
+}
+
+/* Input fields and textarea */
+input[type="text"], input[type="date"], input[type="email"], input[type="number"], textarea {
+    width: 90%;
+    padding: 12px;
+    margin-top: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+    font-size: 16px;
+    background-color: rgba(255, 255, 255, 0.9); /* White with transparency */
+}
+
+/* Focus state for input fields */
+input[type="text"]:focus, input[type="date"]:focus, input[type="email"]:focus, input[type="number"]:focus, textarea:focus {
+    border-color: #9c88ff; /* Light purple */
+    box-shadow: 0 0 12px rgba(247, 247, 248, 0.2);
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+thead {
+    background-color: #ffb8d1; /* Light pink */
+    color: #fff;
+}
+
+/* Delete button styling */
+td button {
+    background-color: transparent;
+    border: none ;
+    font-size: 14px;
+    cursor: pointer;
+    color: red; /* Red delete button */
+    width: auto;
+}
+
+td button:hover {
+    color: rgb(0, 0, 0); /* Darker red on hover */
+}
+
+/* Section for totals and GST */
+.total-section {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #c4a3ff; /* Light purple */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.total-section p {
+    font-size: 18px;
+    margin: 10px 0;
+    color: #333;
+}
+
+.gst-options, .discount-section {
+    margin-top: 20px;
+}
+
+/* Styles for GST radio buttons */
+#gst-percentage label {
+    margin-right: 20px;
+    color: #555;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    margin-top: 30px;
+    color: #888;
+    font-size: 12px;
+}
+
+/* Button section */
+.button-section {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* Button styling */
+button {
+    padding: 10px 20px;
+    background-color: #ffa94d; /* Light orange */
+    color: rgb(252, 252, 252);
+    border:  1px solid #00008b;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+    font-size: 17px;
+    width: auto; /* Ensures buttons are equally wide */
+    text-align: center;
+}
+
+/* Hover state for buttons */
+button:hover {
+    background-color: #00008b; 
+}
+
+/* Admin password section styling */
+.admin-password {
+    padding: 20px;
+    background-color: #ff922b; /* Light pink */
+    border: 1px solid #00008b;
+    border-radius: 8px;
+    width: auto;
+}
+
+.admin-password label {
+    margin-right: 10px;
+    color: #fff3f3;
+}
+
+.admin-password input[type="password"] {
+    width: auto;
+    padding: 8px;
+    border: 1px solid #0e0d0d;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: rgba(241, 225, 225, 0.9);
+}
+
+/* Popup Styles */
+.popup {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.popup h2 {
+    margin-top: 0;
+}
+
+.popup button {
+    margin-top: 10px;
+}
+
+.popup #admin-password-popup {
+    width: 300px;
+}
+
+.popup #confirmation-popup {
+    width: 200px;
+}
+
+/* Mobile Styles (Tablets and smaller screens) */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .made-by {
+        font-size: 20px;
+    }
+
+    input[type="text"], input[type="date"], input[type="email"], input[type="number"], textarea {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    button {
+        width: 100%; /* Stack buttons vertically on smaller screens */
+        margin-bottom: 10px; /* Adds space between buttons */
+    }
+
+    .button-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .total-section p {
+        font-size: 16px;
+    }
+}
+
+/* Mobile Styles (Small devices like phones) */
+@media (max-width: 480px) {
+    .container {
+        width: 100%;
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    .made-by {
+        font-size: 12px;
+    }
+
+    input[type="text"], input[type="date"], input[type="email"], input[type="number"], textarea {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    table {
+        font-size: 12px;
+    }
+
+    button {
+        padding: 8px 14px;
+        font-size: 12px;
+    }
+
+    .total-section p {
+        font-size: 14px;
+    }
+}

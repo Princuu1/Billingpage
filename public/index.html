@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Page</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="print.css" media="print">
+</head>
+<body>
+    <div class="container">
+        <h1>xყȥ ƈσɱραɳΥ Billing Page</h1>
+        
+        <form id="billing-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="address">Address:</label>
+            <textarea id="address" name="address" rows="2" required></textarea>
+      
+            <label for="recipient-email">Recipient Email:</label>
+            <input type="email" id="recipient-email" name="recipient-email" required>
+            
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required>
+
+            <label for="receipt-no">Receipt No:</label>
+            <input type="text" id="receipt-no" name="receipt-no" required>
+
+            <table id="billing-table">
+                <thead>
+                    <tr>
+                        <th>Serial No</th>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td><textarea class="description" rows="1"></textarea></td>
+                        <td><input type="number" class="quantity" oninput="calculateTotal()"></td>
+                        <td><input type="number" class="price" oninput="calculateTotal()"></td>
+                        <td class="row-total">0.00</td>
+                        <td><button type="button" onclick="deleteRow()"></button></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button type="button" onclick="addRow()">Add Row</button>
+
+            <div class="total-section">
+                <p>Subtotal: <span id="subtotal">0.00</span></p>
+                <p>Discount (%): <input type="number" id="discount" oninput="calculateTotal()">%</p>
+                <p>Discount Amount: <span id="discount-amount">0.00</span></p>
+                <div class="gst-options">
+                    <label>
+                        <input type="checkbox" id="gst" onchange="toggleGST()"> GST %
+                    </label>
+                    <div id="gst-percentage" style="display: none;">
+                        <label>
+                            <input type="radio" name="gst-rate" value="5" onchange="calculateTotal()">5%
+                        </label>
+                        <label>
+                            <input type="radio" name="gst-rate" value="12" onchange="calculateTotal()">12%
+                        </label>
+                        <label>
+                            <input type="radio" name="gst-rate" value="18" onchange="calculateTotal()">18%
+                        </label>
+                        <label>
+                            <input type="radio" name="gst-rate" value="28" onchange="calculateTotal()">28%
+                        </label>
+                        <label>
+                            <input type="radio" name="gst-rate" value="0" onchange="calculateTotal()">GST Already Included (0%)
+                        </label>
+                    </div>
+                <p>GST Amount: <span id="gst-amount">0.00</span></p>
+                <p>Total Amount: <span id="total-amount">0.00</span></p>
+            </div>
+
+            <div class="button-section">
+                <button type="button" onclick="printBill()">Print Bill</button>
+                <button type="button" onclick="resetForm()">Reset</button>
+                   <!-- Admin Password Section Above Send Bill Button -->
+                <div class="admin-password">
+                    <label for="admin-password">Admin Password:</label>
+                    <input type="password" id="admin-password" name="admin-password" required>
+                </div>
+                <button type="button" onclick="sendBill()">Send Bill</button>
+            </div>
+
+        </form>
+
+        <footer>
+            <p class="made-by">Made by: Parbhansh with ❤️</p>
+        </footer>
+    </div>
+
+    <div id="confirmation-popup" class="popup">
+        <p>Bill sent successfully with PDF!</p>
+        <button onclick="closePopup()">OK</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
