@@ -266,15 +266,32 @@ button:hover {
     }
 
     table {
-        font-size: 12px;
+        font-size: 10px;
     }
 
     button {
         padding: 8px 14px;
         font-size: 12px;
+        margin-bottom: 10px;
     }
 
     .total-section p {
         font-size: 14px;
+    }
+    .admin-password {
+        padding: 8px;
+        background-color: #ff922b; /* Light pink */
+        border: 1px solid #00008b;
+        border-radius: 8px;
+        width: auto;
+        margin-bottom: 10px;
+    }
+    .admin-password input[type="password"] {
+        width: 94%;
+        padding: 8px;
+        border: 1px solid #0e0d0d;
+        border-radius: 5px;
+        font-size: 14px;
+        background-color: rgba(241, 225, 225, 0.9);
     }
 }

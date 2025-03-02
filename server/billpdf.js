@@ -10,34 +10,75 @@ function generatePDF(billData) {
 
         const stream = new PassThrough();
         const buffers = [];
+// Collect data chunks into the buffers array
+doc.on('data', (chunk) => buffers.push(chunk));
+doc.on('end', () => {
+    // Concatenate all chunks into a single Buffer
+    const pdfBuffer = Buffer.concat(buffers);
+    resolve(pdfBuffer);
+});
+doc.on('error', (err) => {
+    reject(err);
+});
 
-        doc.on('data', buffers.push.bind(buffers));
-        doc.on('end', () => {
-            const pdfBuffer = Buffer.concat(buffers);
-            resolve(pdfBuffer);
-        });
+        // Add background image for the full page (hardcoded path)
+        const backgroundImagePath = 'server/Blue White Minimalist Modern Invoice A4 Document.png'; // Hardcoded path
+        if (backgroundImagePath) {
+            doc.image(backgroundImagePath, 0, 0, { width: 595.28, height: 841.89 });
+            // Title with GSTIN
+doc.fontSize(22)
+.font('server/PlayfulTime-BLBB8.ttf') // Cursive font
+.fillColor('#0097b2') // Main text color
+.text('XYZ Company', { align: 'center' }) // Slight offset for main text
 
-        doc.on('error', reject);
+        .moveDown(0);
+        }
+        // Add Company Logo (if provided)
+         const companyLogoPath = 'server/image.png'; // Path to the company logo
+         if (companyLogoPath) {
+        doc.image(companyLogoPath, 470, 25, { width: 100, height: 50 }); // Right corner positioning
+        }
 
-        // Title
-        doc.fontSize(22)
+        doc.fontSize(14)
             .font('Helvetica-Bold')
-            .fillColor('#3498db')
-            .text('XYZ Company', { align: 'center' })
-            .moveDown(1);
+            .fillColor('green')
+            .text(`GSTIN: GSTIN123456789`, { align: 'right' })
+            .text(`Address: abc colony,sec1,Hansi(125033)`, { align: 'left' })
+            .text(`Contact: 94xxxxxxxx,89xxxxxxxx`, { align: 'left' })
+            .text(`Email: xyzcompany@gmail.com`, { align: 'left' })
+            .moveDown(0.5);
 
         // Draw a line under the title
         doc.moveTo(50, doc.y).lineTo(550, doc.y).strokeColor('#3498db').lineWidth(2).stroke().moveDown(1);
 
         // Billing Information
         doc.fontSize(12)
-            .font('Helvetica-Bold')
+    .font('Helvetica-Bold')
+    .fillColor('black')
+    .text(`Name: ${billData.name}`, { continued: true })
+    .text(`   Contact: 92xxxxxxxx`, { align: 'right' })        
+    .text(`Date: ${billData.date}`, { continued: true })
+    .text(`   Email: ${billData.recipientEmail}`, { align: 'right' })             
+    .text(`Invoice No: XYZ/${billData.receiptNo}/25-26`)
+    .moveDown(1);
+
+        // Bill To and Shipping To Addresses
+        const addressTop = doc.y;
+        const addressColWidths = [250, 250];
+
+        doc.fontSize(12)
+        .font('Helvetica-Bold')
+        .fillColor('black')
+        .text(`Bill To: ${billData.address}`, 50, addressTop, { width: 200 })  // Set a width limit
+        .text(`Shipping To: ${billData.address}`, 300, addressTop, { width: 300 }); // Set width limit for shipping
+     
+
+        doc.fontSize(10)
+            .font('Helvetica')
             .fillColor('black')
-            .text(`Name:          ${billData.name}`)
-            .text(`Address:      ${billData.address}`)
-            .text(`Date:           ${billData.date}`)
-            .text(`Receipt No:   ${billData.receiptNo}`)
-            .moveDown(1);
+            .text(billData.billTo, 50, addressTop + 20, { width: addressColWidths[0] })
+            .text(billData.shippingTo, 300, addressTop + 20, { width: addressColWidths[1] })
+            .moveDown(2);
 
         // Table Headers
         const tableTop = doc.y;
@@ -47,10 +88,10 @@ function generatePDF(billData) {
             .font('Helvetica-Bold')
             .fillColor('#2980b9')
             .text('S.No', 50, tableTop)
-            .text('Description', 80, tableTop)
-            .text('Quantity', 220, tableTop, { align: 'justify' })
-            .text('Price', 300, tableTop, { align: 'justify' })
-            .text('Total', 400, tableTop, { align: 'justify' });
+            .text('Description', 95, tableTop)
+            .text('Quantity', 230, tableTop, { align: 'justify' })
+            .text('Price/Unit', 310, tableTop, { align: 'justify' })
+            .text('Total', 415, tableTop, { align: 'justify' });
 
         // Draw header underline
         doc.moveTo(50, doc.y + 5).lineTo(550, doc.y + 5).strokeColor('#2980b9').lineWidth(1).stroke();
@@ -96,7 +137,7 @@ function generatePDF(billData) {
         const summaryColWidths = [200, 100, 150];
 
         doc.font('Helvetica-Bold').fillColor('#2980b9');
-        doc.text('Summary', 50, summaryTop,{ align: 'center' })
+        doc.text('Summary', 120, summaryTop,)
             .text('', 250, summaryTop, { align: 'justify' })
             .text('Amount', 400, summaryTop, { align: 'justify' });
 
@@ -105,9 +146,9 @@ function generatePDF(billData) {
 
         const summaryItems = [
             { label: 'Subtotal', value: `${billData.subtotal}Rs.` },
-            { label: 'Discount', value: `${billData.discountAmount}Rs.`, percent: `${billData.discount}%` },
-            { label: 'GST Amount', value: `${billData.gstAmount}Rs.`, percent: `` },
-            { label: 'Total Amount', value: `${billData.totalAmount}Rs.`, color: '#4dff4d' } // Green color
+            { label: 'Discount@', value: `${billData.discountAmount}Rs.`, percent: `${billData.discount}%` },
+            { label: 'GST Amount@', value: `${billData.gstAmount}Rs.`, percent: `` },
+            { label: 'Grand Total', value: `${billData.totalAmount}Rs.`, color: '#4dff4d' } // Green color
         ];
 
         let summaryRowY = summaryTop + 25;
@@ -130,15 +171,35 @@ function generatePDF(billData) {
         // Draw borders around the summary table
         doc.moveTo(50, summaryTop - 5).lineTo(550, summaryTop - 5).lineTo(550, summaryRowY - 5).lineTo(50, summaryRowY - 5).closePath().strokeColor('#2980b9').lineWidth(1).stroke();
 
-        // Footer with Color and Font Changes
-        doc.moveDown(5);
-        doc.fontSize(10)
-            .fillColor('#7f8c8d') // Gray
-            .text('Thank you for using our service!', { align: 'justify' })
-            .moveDown(0.5)
-            .fillColor('#bdc3c7')
-            .text('Designed by Parbhansh Sharma', { align: 'justify' });
+        
+        // Bank Account Details (Left Side)
+        const offset = 20; // Adjust to move down
+        const bankDetailsTop = doc.y + offset;
+        doc.rect(50, bankDetailsTop, 250, 80).stroke(); // Box for bank details
+        doc.fontSize(12)
+            .font('Helvetica-Bold')
+            .fillColor('black')
+            .text('Bank Account Details:', 55, bankDetailsTop + 10)
+            .font('Helvetica')
+            .text(`Bank Name: Example Bank`, 55, bankDetailsTop + 30)
+            .text(`Account No: 1234567890 `, 55, bankDetailsTop + 50)
+            .text(`IFSC Code: ABCD0123456 `, 55, bankDetailsTop + 70);
 
+
+        // Footer with Color and Font Changes (Right Side)
+        const footerTop = summaryRowY + 20;
+        doc.fontSize(12)
+            .fillColor('#0097b2') // Gray
+            .text('Thank you for using our service!', 300, footerTop, { align: 'right' })
+            .moveDown(1)
+            .fontSize(60)
+            .fillColor('black')//black
+            .font('server/Bastliga One.ttf')
+            .text('Parbhansh',300, footerTop + 15, { align: 'right' })
+            .fontSize(10)
+            .fillColor('#bdc3c7')
+            .font('Helvetica')
+            .text('signed by Parbhansh Sharma', 300, footerTop + 70, { align: 'right' });
         // Finalize the PDF
         doc.end();
     });

@@ -3,9 +3,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const dateInput = document.getElementById('date');
     const today = new Date().toISOString().split('T')[0];
     dateInput.value = today;
+
+    toggleGST(); // Ensure GST toggle state is correct
     calculateTotal(); // Ensure total is calculated on load
 });
-// calculate total for bill
+
+// Calculate total for bill
 function calculateTotal() {
     let subtotal = 0;
     const rows = document.querySelectorAll('#billing-table tbody tr');
@@ -21,6 +24,7 @@ function calculateTotal() {
     document.getElementById('subtotal').textContent = subtotal.toFixed(2);
 
     let discount = parseFloat(document.getElementById('discount').value) || 0;
+    if (discount > 100) discount = 100; // Prevent invalid discount
     discount = (subtotal * discount) / 100;
     document.getElementById('discount-amount').textContent = discount.toFixed(2);
 
@@ -62,84 +66,58 @@ function deleteRow(button) {
     calculateTotal();
 }
 
+// Toggle GST percentage selection
 function toggleGST() {
     const gstPercentage = document.getElementById('gst-percentage');
-    if (document.getElementById('gst').checked) {
-        gstPercentage.style.display = 'block';
-    } else {
-        gstPercentage.style.display = 'none';
-    }
+    gstPercentage.style.display = document.getElementById('gst').checked ? 'block' : 'none';
     calculateTotal();
 }
 
-function printBill() {
-    window.print();
-}
-
+// Reset the billing form
 function resetForm() {
     document.getElementById('billing-form').reset();
     document.getElementById('gst-percentage').style.display = 'none';
+
     const tableBody = document.querySelector('#billing-table tbody');
-    while (tableBody.rows.length > 1) {
-        tableBody.deleteRow(1);
-    }
+    tableBody.innerHTML = ''; // Clear all rows
     calculateTotal();
 }
 
-function sendBill() {
-    // Gather form data
-    const name = document.getElementById('name').value.trim();
-    const address = document.getElementById('address').value.trim();
-    const date = document.getElementById('date').value;
-    const receiptNo = document.getElementById('receipt-no').value;
-    const recipientEmail = document.getElementById('recipient-email').value.trim();
-    const adminPassword = document.getElementById('admin-password').value.trim();
+// Get bill data from form
+function getBillData() {
+    return {
+        name: document.getElementById('name').value.trim(),
+        address: document.getElementById('address').value.trim(),
+        date: document.getElementById('date').value,
+        receiptNo: document.getElementById('receipt-no').value,
+        recipientEmail: document.getElementById('recipient-email').value.trim(),
+        subtotal: document.getElementById('subtotal').textContent,
+        discount: document.getElementById('discount').value || 0,
+        discountAmount: document.getElementById('discount-amount').textContent,
+        gstAmount: document.getElementById('gst-amount').textContent,
+        totalAmount: document.getElementById('total-amount').textContent,
+        items: Array.from(document.querySelectorAll('#billing-table tbody tr')).map(row => ({
+            description: row.querySelector('.description').value.trim(),
+            quantity: row.querySelector('.quantity').value || 0,
+            price: row.querySelector('.price').value || 0,
+            total: row.querySelector('.row-total').textContent,
+        })),
+        adminPassword: document.getElementById('admin-password').value.trim()
+    };
+}
 
-    if (!name || !address || !recipientEmail || !date || !receiptNo || !adminPassword) {
+// Send bill data to the backend
+function sendBill() {
+    const billData = getBillData();
+
+    if (!billData.name || !billData.address || !billData.recipientEmail || !billData.date || !billData.receiptNo || !billData.adminPassword) {
         alert("Please fill in all required fields before sending the bill.");
         return;
     }
 
-    const subtotal = document.getElementById('subtotal').textContent;
-    const discount = document.getElementById('discount').value || 0;
-    const discountAmount = document.getElementById('discount-amount').textContent;
-    const gstAmount = document.getElementById('gst-amount').textContent;
-    const totalAmount = document.getElementById('total-amount').textContent;
-
-    // Gather table data (billing items)
-    const items = [];
-    const rows = document.querySelectorAll('#billing-table tbody tr');
-    rows.forEach(row => {
-        const description = row.querySelector('.description').value.trim();
-        const quantity = row.querySelector('.quantity').value || 0;
-        const price = row.querySelector('.price').value || 0;
-        const total = row.querySelector('.row-total').textContent;
-
-        items.push({ description, quantity, price, total });
-    });
-
-    // Prepare data to send to the server
-    const billData = {
-        name,
-        address,
-        date,
-        receiptNo,
-        recipientEmail,
-        subtotal,
-        discount,
-        discountAmount,
-        gstAmount,
-        totalAmount,
-        items,
-        adminPassword
-    };
-
-    // Send bill data to the backend (Node.js server)
     fetch('/send-bill', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(billData)
     })
     .then(response => response.json())
@@ -156,3 +134,37 @@ function sendBill() {
     });
 }
 
+// Handle PDF download when the button is clicked
+document.getElementById('download-pdf-button').addEventListener('click', async (event) => {
+    event.preventDefault(); // Prevent any default action on button click
+
+    try {
+        // Get bill data directly using getBillData()
+        const billData = getBillData();
+
+        const response = await fetch('/generate-pdf', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(billData),
+        });
+
+        if (!response.ok) throw new Error('Failed to generate PDF');
+
+        const blob = await response.blob();
+
+        // Create an invisible <a> tag to trigger the download
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `InvoiceNO:XYZ/${billData.receiptNo}/25-26.pdf`; // Filename for the downloaded PDF
+        document.body.appendChild(link); // Add the link to the DOM
+
+        // Trigger the download
+        link.click();
+
+        // Clean up by removing the link element from the DOM
+        document.body.removeChild(link);
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to download PDF. Please try again.');
+    }
+});

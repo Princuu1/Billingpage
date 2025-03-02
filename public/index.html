@@ -5,26 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Billing Page</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="print.css" media="print">
+    <style>
+        /* Add a red asterisk (*) next to required fields */
+        .required::after {
+            content: " *";
+            color: red;
+            margin-left: 5px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
+
+        
         <h1>xყȥ ƈσɱραɳΥ Billing Page</h1>
         
         <form id="billing-form">
-            <label for="name">Name:</label>
+            <label for="name" class="required">Name:</label>
             <input type="text" id="name" name="name" required>
 
-            <label for="address">Address:</label>
+            <label for="address" class="required">Address:</label>
             <textarea id="address" name="address" rows="2" required></textarea>
       
-            <label for="recipient-email">Recipient Email:</label>
+            <label for="recipient-email" class="required">Recipient Email:</label>
             <input type="email" id="recipient-email" name="recipient-email" required>
             
-            <label for="date">Date:</label>
+            <label for="date" class="required">Date:</label>
             <input type="date" id="date" name="date" required>
 
-            <label for="receipt-no">Receipt No:</label>
+            <label for="receipt-no" class="required">Receipt No:</label>
             <input type="text" id="receipt-no" name="receipt-no" required>
 
             <table id="billing-table">
@@ -82,16 +91,18 @@
             </div>
 
             <div class="button-section">
-                <button type="button" onclick="printBill()">Print Bill</button>
+                <button id="download-pdf-button">Download PDF</button>
+
                 <button type="button" onclick="resetForm()">Reset</button>
-                   <!-- Admin Password Section Above Send Bill Button -->
+
+                <!-- Admin Password Section -->
                 <div class="admin-password">
-                    <label for="admin-password">Admin Password:</label>
-                    <input type="password" id="admin-password" name="admin-password" required>
+                    <label for="admin-password" class="required">Admin Password:</label>
+                    <input type="password" id="admin-password" name="admin-password" placeholder="send bill to recipient-email...." required>
                 </div>
+                
                 <button type="button" onclick="sendBill()">Send Bill</button>
             </div>
-
         </form>
 
         <footer>
