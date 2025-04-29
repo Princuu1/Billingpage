@@ -147,7 +147,7 @@ doc.fontSize(22)
         const summaryItems = [
             { label: 'Subtotal', value: `${billData.subtotal}Rs.` },
             { label: 'Discount@', value: `${billData.discountAmount}Rs.`, percent: `${billData.discount}%` },
-            { label: 'GST Amount@', value: `${billData.gstAmount}Rs.`, percent: `` },
+            { label: 'GST Amount@', value: `${billData.gstAmount}Rs.`, percent: `${billData.gstPercentage}%` },
             { label: 'Grand Total', value: `${billData.totalAmount}Rs.`, color: '#4dff4d' } // Green color
         ];
 
