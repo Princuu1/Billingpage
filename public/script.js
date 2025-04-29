@@ -72,6 +72,10 @@ function toggleGST() {
     gstPercentage.style.display = document.getElementById('gst').checked ? 'block' : 'none';
     calculateTotal();
 }
+function getSelectedGSTPercentage() {
+    const selectedGSTRadio = document.querySelector('input[name="gst-rate"]:checked');
+    return selectedGSTRadio ? selectedGSTRadio.value : 0;
+  }
 
 // Reset the billing form
 function resetForm() {
@@ -93,6 +97,7 @@ function getBillData() {
         recipientEmail: document.getElementById('recipient-email').value.trim(),
         subtotal: document.getElementById('subtotal').textContent,
         discount: document.getElementById('discount').value || 0,
+        gstPercentage: getSelectedGSTPercentage(),
         discountAmount: document.getElementById('discount-amount').textContent,
         gstAmount: document.getElementById('gst-amount').textContent,
         totalAmount: document.getElementById('total-amount').textContent,
