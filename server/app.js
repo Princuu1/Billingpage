@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 // Handle sending bill and generating PDF
 app.post('/send-bill', async (req, res) => {
-    const { name, address, date, receiptNo, recipientEmail, subtotal, discount, discountAmount, gstAmount, totalAmount, items, adminPassword } = req.body;
+    const { name, address, date, receiptNo, recipientEmail, subtotal, discount, discountAmount, gstAmount, totalAmount, items, gstPercentage, adminPassword } = req.body;
 
     // Validate admin password
     if (adminPassword !== process.env.ADMIN_PASS) {
@@ -45,6 +45,7 @@ app.post('/send-bill', async (req, res) => {
             discountAmount,
             gstAmount,
             totalAmount,
+            gstPercentage,
             items
         });
 
